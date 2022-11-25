@@ -1,12 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.exceptions import BadRequest
 
 from data.customer import Customer
 
 app = Flask(__name__)
+app.secret_key = 'd1d3d823-c9a1-496e-9f04-a8f264470a20'
 customers = []
-customer_signed_in = None
-
 
 @app.route('/')
 def index():
@@ -67,8 +66,6 @@ def register():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        global customer_signed_in
-
         data = request.form
         email = data.get('email')
         password = data.get('password')
@@ -77,7 +74,7 @@ def login():
         if not matching_customers:
             return render_template('login.html', message="Fehlerhafte E-Mail oder Passwort")
 
-        customer_signed_in = matching_customers[0]
+        session["customer_signed_in"] = matching_customers[0].email
         return redirect(url_for('profile'))
 
     return render_template('login.html');
@@ -85,18 +82,18 @@ def login():
 
 @app.route('/profile', methods=['GET'])
 def profile():
-    global customer_signed_in
-
+    customer_signed_in = session["customer_signed_in"]
     if not customer_signed_in:
         return redirect(url_for('index'))
 
-    return render_template('profile.html', customer=customer_signed_in)
+    customer = [c for c in customers if c.email == customer_signed_in][0]
+
+    return render_template('profile.html', customer=customer)
 
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    global customer_signed_in
-    customer_signed_in = None
+    session["customer_signed_in"] = None
     return redirect(url_for('index'))
 
 
