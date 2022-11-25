@@ -1,0 +1,86 @@
+{% extends "shared/main.html" %}
+
+{% block inhalt %}
+  <div class="row">
+    <div class="col-12 pt-3 d-flex justify-content-center">
+      <div class="card bg-medium" style="width: 480px; max-width: 100%;">
+        <div class="card-header">
+          <h3 class="mb-0">
+            Registrierung
+          </h3>
+        </div>
+        <div class="card-body">
+          {% if message %}
+            <div class="alert alert-warning">
+              {{ message }}
+            </div>
+          {% endif %}
+          <form action="/register" method="post">
+            <div class="row mb-3">
+              <label for="inputForename" class="col-sm-4 col-form-label">Vorname</label>
+              <div class="col-sm-8">
+                <input type="text" name="forename" class="form-control" id="inputForename"
+                       value="{{ customer.forename }}" required/>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputSurname" class="col-sm-4 col-form-label">Nachname</label>
+              <div class="col-sm-8">
+                <input type="text" name="surname" class="form-control" id="inputSurname" value="{{ customer.surname }}"
+                       required/>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputEmail" class="col-sm-4 col-form-label">Email</label>
+              <div class="col-sm-8">
+                <input type="email" name="email" class="form-control" id="inputEmail" value="{{ customer.email }}"
+                       required/>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputPassword" class="col-sm-4 col-form-label">Passwort</label>
+              <div class="col-sm-8">
+                <input type="password" name="password" class="form-control" value="{{ customer.password }}"
+                       id="inputPassword"/>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputPasswordConfirm" class="col-sm-4 col-form-label">Passwort wiederholen</label>
+              <div class="col-sm-8">
+                <input type="password" name="passwordconfirm" class="form-control" value="{{ passwordconfirm }}"
+                       id="inputPasswordConfirm" required/>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-8 offset-sm-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox"
+                         name="checkagb" {{ 'checked' if customer.is_agb else "" }} id="inputAgb" required>
+                  <label class="form-check-label" for="inputAgb">
+                    Ich akzeptiere die allgemeinen Geschäftsbedingungen
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-8 offset-sm-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox"
+                         name="checknewsletter"  {{ 'checked' if customer.is_newsletter else "" }} id="inputNewsletter">
+                  <label class="form-check-label" for="inputNewsletter">
+                    Ich möchte Informationen zu neuen Angeboten und Aktionen erhalten
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <button type="submit" class="btn btn-primary float-end text-white">Registrieren</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
