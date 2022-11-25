@@ -5,6 +5,7 @@ from data.customer import Customer
 
 app = Flask(__name__)
 customers = []
+customer_signed_in = None
 
 
 @app.route('/')
@@ -61,6 +62,42 @@ def register():
 
     return render_template('register.html',
                            customer=Customer())
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        global customer_signed_in
+
+        data = request.form
+        email = data.get('email')
+        password = data.get('password')
+        matching_customers = [c for c in customers if c.email == email and c.password == password]
+
+        if not matching_customers:
+            return render_template('login.html', message="Fehlerhafte E-Mail oder Passwort")
+
+        customer_signed_in = matching_customers[0]
+        return redirect(url_for('profile'))
+
+    return render_template('login.html');
+
+
+@app.route('/profile', methods=['GET'])
+def profile():
+    global customer_signed_in
+
+    if not customer_signed_in:
+        return redirect(url_for('index'))
+
+    return render_template('profile.html', customer=customer_signed_in)
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    global customer_signed_in
+    customer_signed_in = None
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
